@@ -11,23 +11,6 @@ public class Lexer {
         this.input = input;
         readChar(); // Initialize currentChar to the first character of the input
     }
-
-//    public Token peek() {
-//        // save the current state
-//        int tempPosition = position;
-//        int tempReadPosition = readPosition;
-//        char tempCurrentChar = currentChar;
-//
-//        Token nextToken = nextToken();
-//
-//        // restore the state
-//        position = tempPosition;
-//        readPosition = tempReadPosition;
-//        currentChar = tempCurrentChar;
-//
-//        return nextToken;
-//    }
-
     public Token peek() {
         // Save the current state
         int tempPosition = position;
@@ -43,7 +26,6 @@ public class Lexer {
 
         return nextToken;
     }
-
     private void readChar() {
         if (readPosition >= input.length()) {
             currentChar = 0; // EOF, represented as null character
@@ -53,7 +35,6 @@ public class Lexer {
         position = readPosition;
         readPosition++;
     }
-
     public Token nextToken() {
         Token token = null;
         skipWhitespace();
@@ -115,13 +96,11 @@ public class Lexer {
 
         return token;
     }
-
     private void skipWhitespace() {
         while (currentChar == ' ' || currentChar == '\t' || currentChar == '\n' || currentChar == '\r') {
             readChar();
         }
     }
-
     private String readIdentifier() {
         int startPosition = position;
         if (!Character.isLetter(currentChar)) {
@@ -133,7 +112,6 @@ public class Lexer {
         }
         return input.substring(startPosition, position);
     }
-
     private String readNumber() {
         int startPosition = position;
         while (Character.isDigit(currentChar)) {
