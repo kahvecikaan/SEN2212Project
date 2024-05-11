@@ -7,7 +7,21 @@ public class Token {
         ILLEGAL, EOF,
         IDENT, INT,
         ASSIGN, PLUS, MINUS, ASTERISK, SLASH, LPAREN, RPAREN, ABS,
-        COMMA, SEMICOLON
+        COMMA, SEMICOLON;
+
+        public int getPrecedence() {
+            switch(this) {
+                case ASSIGN: return 1;
+                case PLUS:
+                case MINUS:
+                    return 2;
+                case ASTERISK:
+                case SLASH:
+                    return 3;
+                default:
+                    return 0;
+            }
+        }
     }
 
     public TokenType type;
@@ -48,4 +62,8 @@ public class Token {
                 '}';
     }
 
+    public int getPrecedence() {
+        return type.getPrecedence();
+    }
 }
+
