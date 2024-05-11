@@ -1,9 +1,6 @@
 package com.example.expressionevaluator.evaluator;
 
-import com.example.expressionevaluator.ast.AbsExpression;
-import com.example.expressionevaluator.ast.BinaryExpression;
-import com.example.expressionevaluator.ast.IdentifierExpression;
-import com.example.expressionevaluator.ast.IntegerLiteral;
+import com.example.expressionevaluator.ast.*;
 import com.example.expressionevaluator.env.Environment;
 import com.example.expressionevaluator.token.Token;
 
@@ -21,8 +18,11 @@ public class EvaluationVisitor implements Visitor<Integer> {
     @Override
     public Integer visitBinaryExpression(BinaryExpression binaryExpression) {
         Token.TokenType operator = binaryExpression.getOperator().type;
+        // System.out.println("Evaluating Binary Expression: Operator = " + operator);
         int left = binaryExpression.getLeft().accept(this);
+        // System.out.println("Left operand value: " + left);
         int right = binaryExpression.getRight().accept(this);
+        // System.out.println("Right operand value: " + right);
         switch (operator) {
             case PLUS:
                 return left + right;
@@ -32,6 +32,18 @@ public class EvaluationVisitor implements Visitor<Integer> {
                 return left * right;
             case SLASH:
                 return left / right;
+            default:
+                throw new IllegalArgumentException("Unknown operator: " + operator);
+        }
+    }
+
+    @Override
+    public Integer visitUnaryExpression(UnaryExpression unaryExpression) {
+        int operand = unaryExpression.getOperand().accept(this);
+        Token.TokenType operator = unaryExpression.getOperator().type;
+        switch (operator) {
+            case MINUS:
+                return -operand;
             default:
                 throw new IllegalArgumentException("Unknown operator: " + operator);
         }
@@ -51,5 +63,13 @@ public class EvaluationVisitor implements Visitor<Integer> {
         } else {
             throw new RuntimeException("Undefined variable " + name);
         }
+    }
+
+    @Override
+    public Integer visitAssignmentExpression(AssignmentExpression node) {
+        int value = node.getValue().accept(this);
+        String identifier = node.getIdentifier().getName();
+        environment.define(identifier, value);
+        return value;
     }
 }
